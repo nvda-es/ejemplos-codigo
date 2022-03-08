@@ -11,14 +11,18 @@ from urllib import request
 from logHandler import log
 import globalVars
 
+# Este plugin no debe funcionar en pantallas seguras
+def disableInSecureMode(decoratedCls):
+	if globalVars.appArgs.secure:
+		return globalPluginHandler.GlobalPlugin
+	return decoratedCls
+
 # Clase principal
+@disableInSecureMode
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	# Constructor
 	def __init__(self):
-		# Comprobaciones de seguridad
-		if globalVars.appArgs.secure:
-			return
 		# Llamamos al constructor de la clase padre
 		super(GlobalPlugin, self).__init__()
 		# Inicializamos algunas variables
@@ -39,7 +43,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		hilo.start()
 
 	def tareasDeRed(self):
-		# Esta función se conecta a la web nvda.es y graba en el registro el resultado de la operación
+		# Esta función se conecta a la web nvaccess.org y graba en el registro el resultado de la operación
 		try:
 			req = request.urlopen("https://nvaccess.org")
 			req.close()
